@@ -1,0 +1,179 @@
+**********************************************************************************
+****************************** General information *******************************
+**********************************************************************************
+
+Remember that this is a note of my experiences with the BeoRemote protocol. 
+It is neither an official documentation nor am I responsible for any direct, 
+indirect, incidental or consequential damages resulting from using this as 
+your reference.
+Furthermore this is a work-in-progress and most likely incomplete and 
+outdated.
+
+
+
+
+**********************************************************************************
+******************************* Bonjour / Zeroconf *******************************
+**********************************************************************************
+
+NAME:           _beoremote._tcp.local
+PORT:           8080
+TXT RECORD:     mac=Macaddress / device=Devicename / type=Typenumber
+
+
+
+
+**********************************************************************************
+********************************** RESTful API ***********************************
+**********************************************************************************
+
+Everything is handled with JSON over HTTP.
+HTTP header field for "accept" and "content-type" is both "application-json".
+To get an idea of the protocol simply enter the ip address of your device in 
+a normal web browser (e.g. http://192.168.0.123:8080) and follow the links.
+The PUT and POST commands can be easily send with e.g. CURL for testing purpose.
+Most PUT and POST commands needs a RELEASE command afterwards. This is very
+important for e.g. VOLUME_UP. Otherwise volume will automatically increment to
+its maximum.
+
+
+----------------------------------------------------------------------------------
+URL:        http://hostname.local:8080/Ping
+DESCR:      ping
+TYPE:       HTTP GET
+RETURNS:    200
+----------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------
+URL:        http://hostname.local:8080/BeoZone/Zone/Sources
+DESCR:      list of all available sources
+TYPE:       HTTP GET
+RETURNS:    sourcenames and IDs
+----------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------
+URL:        http://hostname.local:8080/BeoZone/Notifications
+DESCR:      stream with 2way notifications
+TYPE:       HTTP GET stream
+EVENTS:     NUMBER_AND_NAME | KEYBOARD | TRACKPAD | VOLUME | SOURCE
+----------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------
+URL:		http://hostname.local:8080/BeoOneWay/Input
+DESCR:      	send input commands / needs a RELEASE command afterwards
+TYPE:       	HTTP POST
+
+PAYLOAD:    	{"timestamp":74728000,"command":"insert_command_here"} 
+    {"character":"character_here"}
+
+COMMANDS:   	RELEASE | TEXT | PMUTE | MENU | RED | GREEN  | YELLOW | 
+		BLUE | WIND | REWIND | PLAY | STOP | BACK | STANDBY | 
+		DIGIT_0 | DIGIT_1 | DIGIT_2 | DIGIT_3 | DIGIT_4 | DIGIT_5 | 
+		DIGIT_6 | DIGIT_7 | DIGIT_8 | DIGIT_9 | VOLUME_DOWN | 
+		VOLUME_UP | STEP_UP | STEP_DOWN | CURSOR_UP | CURSOR_DOWN | 
+		CURSOR_LEFT | CURSOR_RIGHT | SELECT | MUTE
+
+RETURNS:    	202
+----------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------
+URL:        http://hostname.local:8080/BeoInput/Control
+DESCR:      send control commands
+TYPE:       HTTP POST
+PAYLOAD:    {"control":"insert_command_here"}
+COMMANDS:   BACKSPACE | DONE
+RETURNS:    202
+----------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------
+URL:        http://hostname.local:8080/BeoZone/Zone/ActiveSources
+DESCR:      change the current source
+TYPE:       HTTP POST
+PAYLOAD:    {"activeSources":{"secondary":"secondary_ID","primary":"primary_ID"},"join":true}
+RETURNS:    202
+----------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------
+URL:        http://hostname.local:8080/BeoZone/Zone/Sound/SpeakerGroup
+DESCR:      get all speaker groups
+TYPE:       HTTP GET
+RETURNS:    all speaker groups and their numbers
+----------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------
+URL:        http://hostname.local:8080/BeoZone/Zone/Stand
+DESCR:      get all stand positions
+TYPE:       HTTP GET
+RETURNS:    all stand positions and their numbers
+----------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------
+URL:        http://hostname.local:8080/BeoZone/Zone/Picture/Mode
+DESCR:      get all picture modes
+TYPE:       HTTP GET
+RETURNS:    all picture modes and their numbers
+----------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------
+URL:        http://hostname.local:8080/BeoZone/Zone/Picture/Format
+DESCR:      get all picture formats
+TYPE:       HTTP GET
+RETURNS:    all picture formats and their numbers
+----------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------
+URL:        http://hostname.local:8080/BeoZone/Zone/Sound/Mode
+DESCR:      get all sound modes
+TYPE:       HTTP GET
+RETURNS:    all sound modes and their numbers
+----------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------
+URL:        http://hostname.local:8080/BeoZone/Zone/Sound/SpeakerGroup/Active
+DESCR:      change the active speaker group
+TYPE:       HTTP PUT
+PAYLOAD:    {"active":integer_value}
+----------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------
+URL:        http://hostname.local:8080/BeoZone/Zone/Sound/Mode/Active
+DESCR:      change the active sound mode
+TYPE:       HTTP PUT
+PAYLOAD:    {"active":integer_value}
+----------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------
+URL:        http://hostname.local:8080/BeoZone/Zone/Stand/Active
+DESCR:      change the active stand position
+TYPE:       HTTP PUT
+PAYLOAD:    {"active":integer_value}
+----------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------
+URL:        http://hostname.local:8080/BeoZone/Zone/Picture/Mode/Active
+DESCR:      change the active picture mode
+TYPE:       HTTP PUT
+PAYLOAD:    {"active":integer_value}
+----------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------
+URL:        http://hostname.local:8080/BeoZone/Zone/Picture/Format/Active
+DESCR:      change the active picture format
+TYPE:       HTTP PUT
+PAYLOAD:    {"active":integer_value}
+----------------------------------------------------------------------------------
